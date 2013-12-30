@@ -20,56 +20,22 @@ public class TagViewActivity extends Activity {
         setContentView(R.layout.activity_tag_view);
 
         TagView tags = ((TagView) findViewById(R.id.tags));
-        tags.addTag("One", 0);
-        tags.addTag("Two", 0);
-        tags.addTag("Three", 0);
-        tags.addTag("Four", 0);
-        tags.addTag("Five", 0);
-        tags.addTag("Six", 1);
-        tags.addTag("Seven", 0);
-        tags.addTag("Eight", 0);
-        tags.addTag("Nine", 1);
-        tags.addTag("Ten", 0);
-        tags.addTag("Eleven", 0);
-        tags.addTag("Twelve", 0);
-        tags.addTag("Thirteen Twenty-three Thirty-three Forty-three Fifty-three Sixty-three Seventy-three Eighty-three Ninty-three One oh three", 0);
-        tags.addTag("Fourteen", 0);
-        tags.addTag("Fifteen", 0);
-        tags.addTag("Sixteen", 0);
+        tags.setTag("One");
+        tags.setTag("Thirteen Twenty-three Thirty-three Forty-three Fifty-three Sixty-three Seventy-three Eighty-three Ninty-three One oh three");
+//        tags.addTag("Two", 0);
+//        tags.addTag("Three", 0);
+//        tags.addTag("Four", 0);
+//        tags.addTag("Five", 0);
+//        tags.addTag("Six", 1);
+//        tags.addTag("Seven", 0);
+//        tags.addTag("Eight", 0);
+//        tags.addTag("Nine", 1);
+//        tags.addTag("Ten", 0);
+//        tags.addTag("Eleven", 0);
+//        tags.addTag("Twelve", 0);
+//        tags.addTag("Fourteen", 0);
+//        tags.addTag("Fifteen", 0);
+//        tags.addTag("Sixteen", 0);
 
-        parseResource(R.layout.activity_tag_view);
-    }
-
-    private void parseResource(int resId) {
-        Resources rez = getResources();
-
-        XmlResourceParser xml = rez.getXml(resId);
-        while (true) {
-            try {
-                xml.next();
-                switch (xml.getEventType()) {
-                    case XmlPullParser.END_DOCUMENT:
-                        return;
-
-                    case XmlPullParser.START_DOCUMENT:
-                        Log.d("XML", "doc: " + xml.getName());
-                        break;
-
-                    case XmlPullParser.START_TAG:
-                        Log.d("XML", "tag: " + xml.getName());
-                        for (int i = 0; i < xml.getAttributeCount(); i++) {
-                            Log.d("XML", "attr @" + i + ": " + xml.getAttributeName(i) + "=" + xml.getAttributeValue(i));
-                        }
-                        break;
-
-                    case XmlPullParser.END_TAG:
-                        break;
-
-                    case XmlPullParser.TEXT:
-                        Log.d("XML", "text: " + xml.getText());
-                }
-            }
-            catch (Exception e) { return; }
-        }
     }
 }

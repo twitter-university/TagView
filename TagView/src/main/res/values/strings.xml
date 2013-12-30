@@ -5,12 +5,11 @@
     <string name="app_name">TagView</string>
 
     <!-- Menu -->
-    <string name="menu_one">One</string>
-    <string name="menu_two">Two</string>
     <string name="menu_tags">Tags</string>
     <string name="menu_notify">Notify</string>
 
     <!-- Tags -->
-    <string name="header">Tags view</string>
+    <string name="header">Tag View\n Header</string>
+    <string name="footer">Tag View\n Footer</string>
 
 </resources>
