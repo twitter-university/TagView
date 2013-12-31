@@ -150,10 +150,18 @@ public class TagView extends View {
         tagRectF.inset(PAD_H, PAD_V);
         canvas.clipRect(tagRectF);
 
+        canvas.save();
+        canvas.scale(0.4F, 0.9F);
+        canvas.skew(-0.5F, -0.05F);
+        canvas.rotate(3.0F);
+        canvas.translate(626.0F, 20.0F);
+
         canvas.drawText(
             tag,
             (int) tagBorderTL.x + PAD_H,
             (int) tagBorderTL.y + PAD_V + textBaseline,
             textPaint);
+
+        canvas.restore();
     }
 }
