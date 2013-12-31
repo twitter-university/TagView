@@ -20,6 +20,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -64,6 +65,8 @@ public class TagView extends View {
     private final PointF tagBorderTL = new PointF();
     private final PointF tagTL = new PointF();
 
+    private final Paint drawingPaint;
+
     private String tag;
 
     /**
@@ -73,6 +76,8 @@ public class TagView extends View {
      */
     public TagView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        drawingPaint = new TextPaint();
 
         textPaint = new TextPaint();
         textPaint.setAntiAlias(true);
@@ -134,33 +139,42 @@ public class TagView extends View {
     protected void onDraw(Canvas canvas) {
         tagBorderTL.set(getPaddingLeft() + MARGIN, getPaddingTop() + MARGIN);
 
+
+
         float h = Math.min(
                 (2 * PAD_V) + textHeight,
                 getHeight() - (tagBorderTL.y + (getPaddingBottom() + MARGIN)));
 
         float w = Math.min(
-                (2 * PAD_H) + textPaint.measureText(tag),
+                (2 * PAD_H) + drawingPaint.measureText(tag),
                 getWidth() - (tagBorderTL.x + (getPaddingRight() + MARGIN)));
 
         tagRectF.set(tagBorderTL.x, tagBorderTL.y, tagBorderTL.x + w, tagBorderTL.y + h);
 
-        textPaint.setStyle(Paint.Style.STROKE);
-        canvas.drawRoundRect(tagRectF, CORNER_RADIUS, CORNER_RADIUS, textPaint);
+        drawingPaint.set(textPaint);
+        drawingPaint.setStrokeWidth(10.0F);
+        drawingPaint.setStyle(Paint.Style.STROKE);
+        canvas.drawRoundRect(tagRectF, CORNER_RADIUS, CORNER_RADIUS, drawingPaint);
 
         tagRectF.inset(PAD_H, PAD_V);
         canvas.clipRect(tagRectF);
 
         canvas.save();
-        canvas.scale(0.4F, 0.9F);
+        canvas.scale(0.45F, 0.9F);
         canvas.skew(-0.5F, -0.05F);
         canvas.rotate(3.0F);
-        canvas.translate(626.0F, 20.0F);
+        canvas.translate(630.0F, 20.0F);
+
+        drawingPaint.setShadowLayer(3.0F, 15.0F, 17.0F, Color.GREEN);
+        drawingPaint.setMaskFilter(new BlurMaskFilter(5.0F, BlurMaskFilter.Blur.NORMAL));
+        drawingPaint.setStrokeWidth(1.0F);
+        drawingPaint.setStyle(Paint.Style.FILL);
 
         canvas.drawText(
-            tag,
-            (int) tagBorderTL.x + PAD_H,
-            (int) tagBorderTL.y + PAD_V + textBaseline,
-            textPaint);
+                tag,
+                (int) tagBorderTL.x + PAD_H,
+                (int) tagBorderTL.y + PAD_V + textBaseline,
+                drawingPaint);
 
         canvas.restore();
     }
