@@ -31,6 +31,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.twitter.university.android.tagview.R;
@@ -49,6 +50,7 @@ public class TagView extends View {
     private static final int PAD_V = 30;
     private static final int TEXT_SIZE = 64;
     private static final int TEXT_COLOR = Color.BLUE;
+    private static final float CORNER_RADIUS = 20.0F;
     private static final int TAG_BG = R.drawable.tag;
 
 
@@ -130,10 +132,28 @@ public class TagView extends View {
      */
     @Override
     protected void onDraw(Canvas canvas) {
+        tagBorderTL.set(getPaddingLeft() + MARGIN, getPaddingTop() + MARGIN);
+
+        float h = Math.min(
+                (2 * PAD_V) + textHeight,
+                getHeight() - (tagBorderTL.y + (getPaddingBottom() + MARGIN)));
+
+        float w = Math.min(
+                (2 * PAD_H) + textPaint.measureText(tag),
+                getWidth() - (tagBorderTL.x + (getPaddingRight() + MARGIN)));
+
+        tagRectF.set(tagBorderTL.x, tagBorderTL.y, tagBorderTL.x + w, tagBorderTL.y + h);
+
+        textPaint.setStyle(Paint.Style.STROKE);
+        canvas.drawRoundRect(tagRectF, CORNER_RADIUS, CORNER_RADIUS, textPaint);
+
+        tagRectF.inset(PAD_H, PAD_V);
+        canvas.clipRect(tagRectF);
+
         canvas.drawText(
             tag,
-            0,
-            textBaseline,
+            (int) tagBorderTL.x + PAD_H,
+            (int) tagBorderTL.y + PAD_V + textBaseline,
             textPaint);
     }
 }
