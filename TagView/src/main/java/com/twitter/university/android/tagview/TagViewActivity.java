@@ -4,44 +4,50 @@ package com.twitter.university.android.tagview;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.twitter.university.android.tagview.widget.TagView;
 
-import org.xmlpull.v1.XmlPullParser;
-
 
 public class TagViewActivity extends Activity {
 
     private static class TagAnimation implements View.OnClickListener, Animation.AnimationListener {
-        private final Context context;
+        private final Context ctxt;
         private final Animation animIn;
         private final Animation animOut;
         private volatile View animatedView;
+        private volatile boolean finishing;
 
-        TagAnimation(Context context) {
-            this.context = context;
-            this.animOut = AnimationUtils.loadAnimation(context, R.anim.tag_animate_out);
-            this.animIn = AnimationUtils.loadAnimation(context, R.anim.tag_animate_in);
+        TagAnimation(Context ctxt) {
+            this.ctxt = ctxt;
+
+            this.animOut = AnimationUtils.loadAnimation(ctxt, R.anim.tag_animate_out);
+            animOut.setAnimationListener(this);
+
+            this.animIn = AnimationUtils.loadAnimation(ctxt, R.anim.tag_animate_in);
+            animIn.setAnimationListener(this);
         }
 
         @Override
         public void onClick(View view) {
+            finishing = false;
             animatedView = view;
-            animOut.setAnimationListener(this);
+            animatedView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             animatedView.startAnimation(animOut);
         }
 
         @Override
         public void onAnimationEnd(Animation animation) {
-            if (null == animatedView) { return; }
-            animatedView.startAnimation(animIn);
-            animatedView = null;
+            if (finishing) {
+                animatedView.setLayerType(View.LAYER_TYPE_NONE, null);
+                animatedView = null;
+            }
+            else {
+                finishing = true;
+                animatedView.startAnimation(animIn);
+            }
         }
 
         @Override

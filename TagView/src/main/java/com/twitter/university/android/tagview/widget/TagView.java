@@ -169,7 +169,7 @@ public class TagView extends View {
         background.draw(canvas);
 
         canvas.drawText(
-             tagText,
+            tagText,
             (int) tagBorderTL.x + PAD_H,
             (int) tagBorderTL.y + PAD_V + textBaseline,
             textPaint);
