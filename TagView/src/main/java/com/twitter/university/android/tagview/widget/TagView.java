@@ -111,18 +111,9 @@ public class TagView extends View {
      */
     @Override
     protected void onMeasure(int wSpec, int hSpec) {
-
-        int h = View.getDefaultSize(
-                (int) (getPaddingLeft() + getPaddingRight()
-                        + (2 * (MARGIN + PAD_H)) +   textPaint.measureText(tag)),
-                wSpec);
-
-        int v = View.getDefaultSize(
-                (int) (getPaddingTop() + getPaddingBottom()
-                        + (2 * (MARGIN + PAD_V)) +   textHeight),
-                wSpec);
-
-        setMeasuredDimension((int) h, (int) v);
+        setMeasuredDimension(
+            View.getDefaultSize(getSuggestedMinimumWidth(), wSpec),
+            View.getDefaultSize(getSuggestedMinimumHeight(), hSpec));
     }
 
     /**
