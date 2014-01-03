@@ -26,7 +26,7 @@
             <enum name="normal" value="0" />
             <enum name="bold" value="1" />
             <enum name="italic" value="2" />
-            <enum name="bolditalic" value="2" />
+            <enum name="bolditalic" value="3" />
         </attr>
     </declare-styleable>
 

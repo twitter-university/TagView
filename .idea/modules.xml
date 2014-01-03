@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TagView.iml" filepath="$PROJECT_DIR$/TagView.iml" />
-      <module fileurl="file://$PROJECT_DIR$/TagView/TagView-TagView.iml" filepath="$PROJECT_DIR$/TagView/TagView-TagView.iml" />
+      <module fileurl="file:///Volumes/Home/Users/blake/Documents/Projects/TagView/TagView.iml" filepath="/Volumes/Home/Users/blake/Documents/Projects/TagView/TagView.iml" />
+      <module fileurl="file:///Volumes/Home/Users/blake/Documents/Projects/TagView/TagView/TagView-TagView.iml" filepath="/Volumes/Home/Users/blake/Documents/Projects/TagView/TagView/TagView-TagView.iml" />
     </modules>
   </component>
 </project>

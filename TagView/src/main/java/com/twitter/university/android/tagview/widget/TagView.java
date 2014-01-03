@@ -25,10 +25,10 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.twitter.university.android.tagview.R;
@@ -40,16 +40,12 @@ import com.twitter.university.android.tagview.R;
  * @author <a href="mailto:blake.meike@gmail.com">G. Blake Meike</a>
  */
 public class TagView extends View {
-    static final String TAG = "TAGVIEW";
-
-    static final String DEFAULT_FONT = "fonts/DroidSansFallback.ttf";
-
     private static class Tag {
         final PointF tl = new PointF();
         final int level;
         final String text;
         String shortTag;
-        float w;
+        float width;
         public Tag(String tag, int level) {
             this.level = level;
             this.text = tag;
@@ -75,10 +71,12 @@ public class TagView extends View {
         b.setMargin(4);
         b.setPaddingH(4);
         b.setPaddingV(4);
-        b.setTextColor(Color.BLACK);
-        b.setTextSize(18);
+        b.setTextFontName("fonts/DroidSansFallback.ttf");
+        b.setTextFace(0);
         b.setTextStyle(0);
-        b.setTextFace(4);
+        b.setTextSize(18);
+        b.setTextColor(Color.BLACK);
+        b.setBackground(new ColorDrawable(Color.WHITE));
 
         TypedArray atts = context.getTheme()
             .obtainStyledAttributes(attrs, R.styleable.tag_view, defStyle, 0);
@@ -121,7 +119,6 @@ public class TagView extends View {
         int h = View.getDefaultSize(getSuggestedMinimumHeight(), hSpec);
 
         if (MeasureSpec.EXACTLY != MeasureSpec.getMode(hSpec)) {
-            Log.d("TAG", "w: " + w);
             int maxW = w - (getPaddingLeft() + getPaddingRight());
 
             float x = 0;
@@ -145,24 +142,22 @@ public class TagView extends View {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (!changed) { return; }
-
         int padL = getPaddingLeft();
         int padT = getPaddingTop();
         int maxW = right - (left + padL + getPaddingRight());
-        PointF tagBorderTL = new PointF(padL, padT);
+        tagTL.set(padL, padT);
         for (Tag tag : tags) {
             tag.shortTag = TextUtils
                 .ellipsize(tag.text, config.textPaint, maxW - config.tagBorderH, TruncateAt.END)
                 .toString();
 
-            tag.w = config.textPaint.measureText(tag.shortTag);
-            if (tagBorderTL.x + tag.w + config.tagBorderH > maxW) {
-                tagBorderTL.set(padL, tagBorderTL.y + config.tagBorderedV);
+            tag.width = config.textPaint.measureText(tag.shortTag);
+            if (tagTL.x + tag.width + config.tagBorderH > maxW) {
+                tagTL.set(padL, tagTL.y + config.tagBorderedV);
             }
-            tag.tl.set(tagBorderTL);
+            tag.tl.set(tagTL);
 
-            tagBorderTL.x += tag.w + config.tagBorderH;
+            tagTL.x += tag.width + config.tagBorderH;
         }
     }
 
@@ -180,7 +175,7 @@ public class TagView extends View {
             tagRectF.set(
                     tagTL.x,
                     tagTL.y,
-                    tagTL.x + tag.w + (2 * config.paddingH) + 1,
+                    tagTL.x + tag.width + (2 * config.paddingH) + 1,
                     tagTL.y + config.tagHeight);
 
             tagRectF.round(tagRect);
