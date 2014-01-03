@@ -19,20 +19,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.LevelListDrawable;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.twitter.university.android.tagview.R;
@@ -56,6 +53,7 @@ public class TagView extends View {
     private static class Tag {
         private final String tag;
         private final int level;
+        String shortTag;
         Tag(String tag, int level) {
             this.tag = tag;
             this.level = level;
@@ -67,7 +65,6 @@ public class TagView extends View {
     private final float textHeight;
     private final float textBaseline;
 
-    private final Rect bounds = new Rect();
     private final Rect tagRect = new Rect();
     private final RectF tagRectF = new RectF();
     private final PointF tagBorderTL = new PointF();
@@ -129,16 +126,25 @@ public class TagView extends View {
         String tagText = (null == tag) ? "" : tag.tag;
 
         int h = View.getDefaultSize(
-                (int) (getPaddingLeft() + getPaddingRight()
-                        + (2 * (MARGIN + PAD_H)) + textPaint.measureText(tagText)),
-                wSpec);
+            (int) (getPaddingLeft() + getPaddingRight()
+                + (2 * (MARGIN + PAD_H)) + textPaint.measureText(tagText)),
+            wSpec);
 
         int v = View.getDefaultSize(
-                (int) (getPaddingTop() + getPaddingBottom()
-                        + (2 * (MARGIN + PAD_V)) + textHeight),
-                wSpec);
+            (int) (getPaddingTop() + getPaddingBottom()
+                + (2 * (MARGIN + PAD_V)) + textHeight),
+            wSpec);
 
         setMeasuredDimension((int) h, (int) v);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if ((!changed) || (null == tag)) { return; }
+
+        float wMax = right - (left + getPaddingLeft() + getPaddingRight() + (2 * (PAD_H + MARGIN)));
+        tag.shortTag = TextUtils.ellipsize(tag.tag, textPaint, wMax, TruncateAt.END).toString();
     }
 
     /**
@@ -146,20 +152,17 @@ public class TagView extends View {
      */
     @Override
     protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        if (null == tag) { return; }
+
         tagBorderTL.set(getPaddingLeft() + MARGIN, getPaddingTop() + MARGIN);
 
         float h = Math.min(
                 (2 * PAD_V) + textHeight,
                 getHeight() - (tagBorderTL.y + (getPaddingBottom() + MARGIN)));
 
-        float wMax = getWidth() - (tagBorderTL.x + (getPaddingRight() + MARGIN));
-        String tagText = (null == tag) ? "" : tag.tag;
-        float w = (2 * PAD_H) + textPaint.measureText(tagText);
-        if (wMax < w) {
-            tagText = TextUtils.ellipsize(tagText, textPaint, wMax - (2 * PAD_H), TruncateAt.END)
-                    .toString();
-            w = (2 * PAD_H) + textPaint.measureText(tagText);
-        }
+        float w = (2 * PAD_H) + textPaint.measureText(tag.shortTag);
 
         tagRectF.set(tagBorderTL.x, tagBorderTL.y, tagBorderTL.x + w, tagBorderTL.y + h);
 
@@ -168,10 +171,23 @@ public class TagView extends View {
         background.setLevel(tag.level);
         background.draw(canvas);
 
+        tagRectF.inset(PAD_H, PAD_V);
+        canvas.clipRect(tagRectF);
+
+        canvas.save();
+        canvas.rotate(
+                180.0F,
+                tagRectF.left + ((tagRectF.right - tagRectF.left) / 2),
+                tagRectF.top + ((tagRectF.bottom - tagRectF.top) / 2));
+
+        textPaint.setShadowLayer(6.0F, 15.0F, 17.0F, Color.GREEN);
+
         canvas.drawText(
-            tagText,
-            (int) tagBorderTL.x + PAD_H,
-            (int) tagBorderTL.y + PAD_V + textBaseline,
-            textPaint);
+                tag.shortTag,
+                (int) tagBorderTL.x + PAD_H,
+                (int) tagBorderTL.y + PAD_V + textBaseline,
+                textPaint);
+
+        canvas.restore();
     }
 }
